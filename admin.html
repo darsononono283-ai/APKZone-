@@ -768,6 +768,133 @@
     <script src="supabase.js"></script>
 
 </script>
+  
+  <div class="container" style="max-width:700px;margin:40px auto;padding:20px">
+
+    <h2>Tambah APK</h2>
+
+    <form id="addAppForm">
+
+        <input
+            type="text"
+            id="name"
+            placeholder="Nama APK"
+            required
+            style="width:100%;padding:12px;margin:8px 0"
+        >
+
+        <input
+            type="text"
+            id="description"
+            placeholder="Deskripsi APK"
+            required
+            style="width:100%;padding:12px;margin:8px 0"
+        >
+
+        <input
+            type="text"
+            id="version"
+            placeholder="Versi"
+            required
+            style="width:100%;padding:12px;margin:8px 0"
+        >
+
+        <input
+            type="text"
+            id="icon"
+            placeholder="URL gambar/icon APK"
+            required
+            style="width:100%;padding:12px;margin:8px 0"
+        >
+
+        <input
+            type="text"
+            id="download_url"
+            placeholder="Link download APK"
+            required
+            style="width:100%;padding:12px;margin:8px 0"
+        >
+
+        <input
+            type="text"
+            id="category"
+            placeholder="Kategori"
+            required
+            style="width:100%;padding:12px;margin:8px 0"
+        >
+
+        <button
+            type="submit"
+            style="width:100%;padding:14px;margin-top:10px"
+        >
+            Tambahkan APK
+        </button>
+
+    </form>
+
+    <p id="status"></p>
+
+</div>
+
+  <script>
+document.getElementById("addAppForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const status = document.getElementById("status");
+
+    const { data, error } = await supabaseClient
+        .from("apps")
+        .insert([{
+            name: document.getElementById("name").value,
+            description: document.getElementById("description").value,
+            version: document.getElementById("version").value,
+            icon: document.getElementById("icon").value,
+            download_url: document.getElementById("download_url").value,
+            category: document.getElementById("category").value
+        }]);
+
+    if (error) {
+        status.textContent = "Gagal: " + error.message;
+        return;
+    }
+
+    status.textContent = "APK berhasil ditambahkan!";
+    document.getElementById("addAppForm").reset();
+});
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+document.getElementById("addAppForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const status = document.getElementById("status");
+
+    const { data, error } = await supabaseClient
+        .from("apps")
+        .insert([{
+            name: document.getElementById("name").value,
+            description: document.getElementById("description").value,
+            version: document.getElementById("version").value,
+            icon: document.getElementById("icon").value,
+            download_url: document.getElementById("download_url").value,
+            category: document.getElementById("category").value
+        }]);
+
+    if (error) {
+        status.textContent = "Gagal: " + error.message;
+        return;
+    }
+
+    status.textContent = "APK berhasil ditambahkan!";
+    document.getElementById("addAppForm").reset();
+});
+</script>
+
+</body>
+</html>
 
 </body>
 </html>
