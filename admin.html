@@ -894,7 +894,49 @@ document.getElementById("addAppForm").addEventListener("submit", async function(
 </script>
 
 </body>
-</html>
+  <div class="container" style="max-width:600px;margin:30px auto;">
+    <h2>Tambah APK</h2>
+
+    <form id="addAppForm">
+
+        <input id="name"
+               type="text"
+               placeholder="Nama APK"
+               required>
+
+        <input id="description"
+               type="text"
+               placeholder="Deskripsi"
+               required>
+
+        <input id="version"
+               type="text"
+               placeholder="Versi, contoh: 1.0.0"
+               required>
+
+        <input id="icon"
+               type="url"
+               placeholder="URL icon APK"
+               required>
+
+        <input id="download_url"
+               type="url"
+               placeholder="Link download APK"
+               required>
+
+        <input id="category"
+               type="text"
+               placeholder="Kategori, contoh: Tools"
+               required>
+
+        <button type="submit">
+            Tambahkan APK
+        </button>
+
+    </form>
+
+    <p id="status"></p>
+  </div>
 
 </body>
 </html>
