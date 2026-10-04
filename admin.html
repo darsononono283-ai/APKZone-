@@ -2,68 +2,92 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Admin - APKZone</title>
+  <title>Admin APKZone</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    rel="stylesheet"
+  >
 
   <style>
     body {
       background: #f5f7fb;
-      font-family: Arial, sans-serif;
+      color: #222;
     }
 
     .navbar {
-      background: white;
+      background: #fff;
       border-bottom: 1px solid #eee;
     }
 
-    .logo {
-      color: #5b5ff0;
-      font-size: 23px;
+    .brand {
       font-weight: 800;
-      text-decoration: none;
+      color: #5b5ff0;
+      font-size: 20px;
     }
 
-    .admin-card {
-      max-width: 700px;
-      margin: 35px auto;
-      background: white;
-      border-radius: 20px;
-      padding: 25px;
-      border: 1px solid #eee;
+    .container-main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 30px 15px;
     }
 
-    .form-control,
-    .form-select {
-      border-radius: 12px;
-      padding: 12px;
+    .card {
+      border: 0;
+      border-radius: 18px;
+      box-shadow: 0 5px 25px rgba(0,0,0,.06);
     }
 
-    .btn-main {
+    .apk-icon {
+      width: 55px;
+      height: 55px;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+
+    .btn-primary {
       background: #5b5ff0;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 12px;
-      font-weight: 700;
+      border-color: #5b5ff0;
     }
 
-    .btn-main:hover {
-      background: #494ddc;
-      color: white;
+    .btn-primary:hover {
+      background: #484bd1;
+      border-color: #484bd1;
     }
 
-    textarea {
-      min-height: 250px;
-      font-family: monospace;
-      font-size: 13px;
+    body.dark {
+      background: #10131a;
+      color: #eee;
     }
 
-    .logout-btn {
-      border-radius: 10px;
+    body.dark .navbar,
+    body.dark .card {
+      background: #181c25;
+      color: #eee;
+    }
+
+    body.dark .form-control,
+    body.dark .form-select {
+      background: #11151c;
+      color: #fff;
+      border-color: #333;
+    }
+
+    body.dark .text-muted {
+      color: #aaa !important;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #888;
     }
   </style>
 </head>
@@ -71,13 +95,675 @@
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar">
-  <div class="container py-3 d-flex justify-content-between align-items-center">
+<nav class="navbar sticky-top">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between w-100">
 
-    <a href="index.html" class="logo">
-      <i class="bi bi-phone"></i> APKZone
-    </a>
+      <a href="index.html" class="text-decoration-none brand">
+        APKZone
+      </a>
 
-    <div class="d-flex gap-2">
+      <div class="d-flex gap-2">
+        <button
+          class="btn btn-outline-secondary"
+          onclick="toggleDark()"
+          title="Mode gelap"
+        >
+          <i class="bi bi-moon"></i>
+        </button>
 
-      <a href="index.html" class="btn btn-sm btn
+        <button
+          class="btn btn-outline-danger"
+          onclick="logout()"
+        >
+          <i class="bi bi-box-arrow-right"></i>
+          Keluar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+
+<div class="container-main">
+
+  <!-- HEADER -->
+  <div class="mb-4">
+    <h2 class="fw-bold mb-1">
+      Dashboard Admin
+    </h2>
+
+    <p class="text-muted mb-0">
+      Kelola aplikasi APKZone
+    </p>
+  </div>
+
+
+  <!-- FORM TAMBAH / EDIT -->
+  <div class="card p-4 mb-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+      <h5 class="fw-bold mb-0" id="formTitle">
+        <i class="bi bi-plus-circle"></i>
+        Tambah APK
+      </h5>
+
+      <button
+        class="btn btn-sm btn-outline-secondary d-none"
+        id="cancelEdit"
+        onclick="resetForm()"
+      >
+        Batal Edit
+      </button>
+
+    </div>
+
+
+    <form id="apkForm">
+
+      <input type="hidden" id="editId">
+
+
+      <div class="row g-3">
+
+        <!-- NAMA -->
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">
+            Nama APK
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            id="nama"
+            placeholder="Contoh: CapCut"
+            required
+          >
+        </div>
+
+
+        <!-- VERSI -->
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">
+            Versi
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            id="versi"
+            placeholder="1.0.0"
+            required
+          >
+        </div>
+
+
+        <!-- UKURAN -->
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">
+            Ukuran
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            id="ukuran"
+            placeholder="100 MB"
+            required
+          >
+        </div>
+
+
+        <!-- KATEGORI -->
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">
+            Kategori
+          </label>
+
+          <select
+            class="form-select"
+            id="kategori"
+            required
+          >
+            <option value="">Pilih kategori</option>
+            <option value="Editor">Editor</option>
+            <option value="Game">Game</option>
+            <option value="Musik">Musik</option>
+            <option value="Tools">Tools</option>
+            <option value="Sosial">Sosial</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+
+
+        <!-- ICON -->
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">
+            URL Icon
+          </label>
+
+          <input
+            type="url"
+            class="form-control"
+            id="icon"
+            placeholder="https://..."
+            required
+          >
+        </div>
+
+
+        <!-- DESKRIPSI -->
+        <div class="col-12">
+          <label class="form-label fw-semibold">
+            Deskripsi
+          </label>
+
+          <textarea
+            class="form-control"
+            id="deskripsi"
+            rows="3"
+            placeholder="Deskripsi aplikasi..."
+            required
+          ></textarea>
+        </div>
+
+
+        <!-- DOWNLOAD -->
+        <div class="col-12">
+          <label class="form-label fw-semibold">
+            Link Download APK
+          </label>
+
+          <input
+            type="url"
+            class="form-control"
+            id="download"
+            placeholder="https://..."
+            required
+          >
+
+          <small class="text-muted">
+            Gunakan link file APK yang memang kamu berhak distribusikan.
+          </small>
+        </div>
+
+
+        <!-- BUTTON -->
+        <div class="col-12">
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            id="saveButton"
+          >
+            <i class="bi bi-plus-lg"></i>
+            Tambah APK
+          </button>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+
+
+  <!-- DAFTAR APK -->
+  <div class="card p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+      <div>
+        <h5 class="fw-bold mb-1">
+          <i class="bi bi-grid"></i>
+          Daftar APK
+        </h5>
+
+        <small class="text-muted">
+          <span id="totalAPK">0</span> aplikasi
+        </small>
+      </div>
+
+      <button
+        class="btn btn-sm btn-outline-danger"
+        onclick="hapusSemua()"
+      >
+        <i class="bi bi-trash"></i>
+        Hapus Semua
+      </button>
+
+    </div>
+
+
+    <div id="apkList"></div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  /* =========================
+     CEK LOGIN
+  ========================= */
+
+  if (
+    sessionStorage.getItem("apkzone_admin") !== "true"
+  ) {
+    window.location.href = "login.html";
+  }
+
+
+  /* =========================
+     DATA APK
+  ========================= */
+
+  let apksAdmin =
+    JSON.parse(
+      localStorage.getItem("apkzone_apks")
+    ) || [];
+
+
+  /* =========================
+     TAMPILKAN APK
+  ========================= */
+
+  function tampilkanAPK() {
+
+    const list =
+      document.getElementById("apkList");
+
+    const total =
+      document.getElementById("totalAPK");
+
+    total.textContent =
+      apksAdmin.length;
+
+
+    if (apksAdmin.length === 0) {
+
+      list.innerHTML = `
+        <div class="empty">
+          <i class="bi bi-box-seam fs-1"></i>
+
+          <h6 class="mt-3">
+            Belum ada APK
+          </h6>
+
+          <p>
+            Tambahkan APK menggunakan form di atas.
+          </p>
+        </div>
+      `;
+
+      return;
+    }
+
+
+    list.innerHTML =
+      apksAdmin.map(apk => `
+
+        <div class="border rounded-4 p-3 mb-3">
+
+          <div class="d-flex align-items-center gap-3">
+
+            <img
+              src="${escapeHTML(apk.icon)}"
+              class="apk-icon"
+              onerror="this.src='https://placehold.co/100x100'"
+            >
+
+            <div class="flex-grow-1">
+
+              <h6 class="fw-bold mb-1">
+                ${escapeHTML(apk.nama)}
+              </h6>
+
+              <small class="text-muted">
+                ${escapeHTML(apk.versi)}
+                •
+                ${escapeHTML(apk.ukuran)}
+                •
+                ${escapeHTML(apk.kategori)}
+              </small>
+
+            </div>
+
+
+            <div class="d-flex gap-2">
+
+              <button
+                class="btn btn-sm btn-outline-primary"
+                onclick="editAPK(${apk.id})"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
+
+              <button
+                class="btn btn-sm btn-outline-danger"
+                onclick="hapusAPK(${apk.id})"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `).join("");
+
+  }
+
+
+  /* =========================
+     TAMBAH / EDIT APK
+  ========================= */
+
+  document
+    .getElementById("apkForm")
+    .addEventListener("submit", function(e) {
+
+      e.preventDefault();
+
+
+      const editId =
+        document.getElementById("editId").value;
+
+
+      const data = {
+
+        id:
+          editId
+            ? Number(editId)
+            : Date.now(),
+
+        nama:
+          document.getElementById("nama").value.trim(),
+
+        versi:
+          document.getElementById("versi").value.trim(),
+
+        ukuran:
+          document.getElementById("ukuran").value.trim(),
+
+        kategori:
+          document.getElementById("kategori").value,
+
+        icon:
+          document.getElementById("icon").value.trim(),
+
+        deskripsi:
+          document.getElementById("deskripsi").value.trim(),
+
+        download:
+          document.getElementById("download").value.trim()
+
+      };
+
+
+      if (editId) {
+
+        const index =
+          apksAdmin.findIndex(
+            apk => apk.id === Number(editId)
+          );
+
+        if (index !== -1) {
+          apksAdmin[index] = data;
+        }
+
+      } else {
+
+        apksAdmin.push(data);
+
+      }
+
+
+      localStorage.setItem(
+        "apkzone_apks",
+        JSON.stringify(apksAdmin)
+      );
+
+
+      resetForm();
+
+      tampilkanAPK();
+
+      alert(
+        editId
+          ? "APK berhasil diperbarui."
+          : "APK berhasil ditambahkan."
+      );
+
+    });
+
+
+  /* =========================
+     EDIT
+  ========================= */
+
+  function editAPK(id) {
+
+    const apk =
+      apksAdmin.find(
+        item => item.id === id
+      );
+
+    if (!apk) return;
+
+
+    document.getElementById("editId").value =
+      apk.id;
+
+    document.getElementById("nama").value =
+      apk.nama;
+
+    document.getElementById("versi").value =
+      apk.versi;
+
+    document.getElementById("ukuran").value =
+      apk.ukuran;
+
+    document.getElementById("kategori").value =
+      apk.kategori;
+
+    document.getElementById("icon").value =
+      apk.icon;
+
+    document.getElementById("deskripsi").value =
+      apk.deskripsi;
+
+    document.getElementById("download").value =
+      apk.download;
+
+
+    document.getElementById("formTitle").innerHTML =
+      `<i class="bi bi-pencil"></i> Edit APK`;
+
+    document.getElementById("saveButton").innerHTML =
+      `<i class="bi bi-save"></i> Simpan Perubahan`;
+
+    document
+      .getElementById("cancelEdit")
+      .classList.remove("d-none");
+
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+  }
+
+
+  /* =========================
+     RESET FORM
+  ========================= */
+
+  function resetForm() {
+
+    document
+      .getElementById("apkForm")
+      .reset();
+
+    document
+      .getElementById("editId")
+      .value = "";
+
+
+    document.getElementById("formTitle").innerHTML =
+      `<i class="bi bi-plus-circle"></i> Tambah APK`;
+
+    document.getElementById("saveButton").innerHTML =
+      `<i class="bi bi-plus-lg"></i> Tambah APK`;
+
+    document
+      .getElementById("cancelEdit")
+      .classList.add("d-none");
+
+  }
+
+
+  /* =========================
+     HAPUS APK
+  ========================= */
+
+  function hapusAPK(id) {
+
+    const apk =
+      apksAdmin.find(
+        item => item.id === id
+      );
+
+    if (!apk) return;
+
+
+    const yakin =
+      confirm(
+        `Hapus "${apk.nama}"?`
+      );
+
+    if (!yakin) return;
+
+
+    apksAdmin =
+      apksAdmin.filter(
+        item => item.id !== id
+      );
+
+
+    localStorage.setItem(
+      "apkzone_apks",
+      JSON.stringify(apksAdmin)
+    );
+
+
+    tampilkanAPK();
+
+  }
+
+
+  /* =========================
+     HAPUS SEMUA
+  ========================= */
+
+  function hapusSemua() {
+
+    if (apksAdmin.length === 0) {
+      alert("Belum ada APK.");
+      return;
+    }
+
+
+    const yakin =
+      confirm(
+        "Yakin ingin menghapus semua APK?"
+      );
+
+    if (!yakin) return;
+
+
+    apksAdmin = [];
+
+
+    localStorage.removeItem(
+      "apkzone_apks"
+    );
+
+
+    tampilkanAPK();
+
+  }
+
+
+  /* =========================
+     DARK MODE
+  ========================= */
+
+  function toggleDark() {
+
+    document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+      "apkzone_dark",
+      document.body.classList.contains("dark")
+    );
+
+  }
+
+
+  if (
+    localStorage.getItem("apkzone_dark") === "true"
+  ) {
+    document.body.classList.add("dark");
+  }
+
+
+  /* =========================
+     LOGOUT
+  ========================= */
+
+  function logout() {
+
+    sessionStorage.removeItem(
+      "apkzone_admin"
+    );
+
+    window.location.href =
+      "login.html";
+
+  }
+
+
+  /* =========================
+     ESCAPE HTML
+  ========================= */
+
+  function escapeHTML(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* =========================
+     START
+  ========================= */
+
+  tampilkanAPK();
+
+</script>
+
+</body>
+</html>
